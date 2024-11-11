@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import PJScreen from "../screens/PJ/PJScreen"
 import PJLensesScreen from "../screens/PJ/PJLensesScreen"
 import PJCalculatorScreen from "../screens/PJ/PJCalculatorScreen"
-import { StyleSheet, View, Text } from "react-native"
+import { StyleSheet, View, Text, Platform } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
 
 const Tab = createBottomTabNavigator()
@@ -15,6 +15,8 @@ export default function AppTwoTabs() {
       screenOptions={{
         tabBarStyle: {
           height: 70,
+          paddingBottom: Platform.OS === "ios" ? 20 : 0,
+          height: Platform.OS === "ios" ? 90 : 70,
         },
       }}
     >

@@ -6,6 +6,7 @@ import { NavigationContainer } from "@react-navigation/native"
 import AppOneTabs from "./tabs/AppOneTabs"
 import AppTwoTabs from "./tabs/AppTwoTabs"
 import Welcome from "./components/Welcome"
+import LEDConfigurationsScreen from "./screens/LED/LEDConfigurationsScreen"
 
 const Drawer = createDrawerNavigator()
 
@@ -36,6 +37,11 @@ export default function App() {
           <Drawer.Screen
             name="Projector"
             component={AppTwoTabs}
+            options={{ headerTitle: "Moo TV" }}
+          />
+          <Drawer.Screen
+            name="LED Wall Configurations"
+            component={LEDConfigurationsScreen}
             options={{ headerTitle: "Moo TV" }}
           />
         </Drawer.Navigator>

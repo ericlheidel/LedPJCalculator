@@ -59,3 +59,80 @@ export const ProcessorExamples = [
     image: "",
   },
 ]
+
+export const TourExamples = [
+  {
+    id: 1,
+    tourName: "Chris Stapleton",
+  },
+  {
+    id: 2,
+    tourName: "ZZ Top",
+  },
+  {
+    id: 3,
+    tourName: "Luke Combs",
+  },
+  {
+    id: 4,
+    tourName: "Brad Paisley",
+  },
+  {
+    id: 5,
+    tourName: "Dierks Bentley",
+  },
+  {
+    id: 6,
+    tourName: "Lynyrd Skynyrd",
+  },
+  {
+    id: 7,
+    tourName: "Hall & Oates",
+  },
+]
+
+export const ShowExamples = [
+  {
+    id: 1,
+    showName: "Grand Prix 2024",
+  },
+  {
+    id: 2,
+    showName: "IEBA 2023",
+  },
+  {
+    id: 3,
+    showName: "Grand Prix 2023",
+  },
+  {
+    id: 4,
+    showName: "Scott Hamilton 2024",
+  },
+  {
+    id: 5,
+    showName: "IEBA 2022",
+  },
+  {
+    id: 6,
+    showName: "IEBA 2024",
+  },
+]
+
+export const LEDConfigurationTourExample = [
+  {
+    id: 1,
+    name: "D Rig",
+  },
+  {
+    id: 2,
+    name: "A Rig",
+  },
+  {
+    id: 3,
+    name: "C Rig",
+  },
+  {
+    id: 4,
+    name: "B Rig",
+  },
+]
