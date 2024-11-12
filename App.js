@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react"
 import { createDrawerNavigator } from "@react-navigation/drawer"
 import "./gesture-handler"
-import { StyleSheet, Text, View } from "react-native"
+import { StyleSheet, View } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
 import AppOneTabs from "./tabs/AppOneTabs"
 import AppTwoTabs from "./tabs/AppTwoTabs"
 import Welcome from "./components/Welcome"
 import LEDConfigurationsScreen from "./screens/LED/LEDConfigurationsScreen"
+import DataScreen from "./screens/Data/DataScreen"
 
 const Drawer = createDrawerNavigator()
 
@@ -43,6 +44,11 @@ export default function App() {
             name="LED Wall Configurations"
             component={LEDConfigurationsScreen}
             options={{ headerTitle: "Moo TV" }}
+          />
+          <Drawer.Screen
+            name="GET Shoe API FETCH EXAMPLE"
+            component={DataScreen}
+            options={{ headerTitle: "Get Data Example" }}
           />
         </Drawer.Navigator>
       </NavigationContainer>
