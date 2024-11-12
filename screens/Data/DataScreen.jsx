@@ -22,6 +22,7 @@ export default function DataScreen() {
       setIsLoading(false)
     } catch (error) {
       alert("Error fetching data:", error)
+    } finally {
       setIsLoading(false)
     }
   }
