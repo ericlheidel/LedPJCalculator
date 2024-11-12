@@ -9,17 +9,20 @@ import {
   View,
 } from "react-native"
 
-export default function DataScreen() {
+export default function ExcelDataScreen() {
   const [data, setData] = useState({})
   const [isLoading, setIsLoading] = useState(false)
 
   const getData = async () => {
     try {
       setIsLoading(true)
-      const res = await fetch(`https://omgshoes.eheidel.com/api/test/shoe`)
+      const res = await fetch(
+        `https://graph.microsoft.com/v1.0/me/drive/root:/WEDDING GIFTS.xlsx:/workbook/worksheets/{00000000-0001-0000-0000-000000000000}/range(address='C3:C34')`
+      )
       const data = await res.json()
       setData(data)
       setIsLoading(false)
+      console.log(data)
     } catch (error) {
       alert("Error fetching data:", error)
       setIsLoading(false)
@@ -33,10 +36,10 @@ export default function DataScreen() {
         alignItems: "center",
       }}
     >
-      <Text style={styles.titleText}>Data Screen</Text>
+      <Text style={styles.titleText}>Excel Data Screen</Text>
       {!isLoading && (
         <Button
-          title="Get Data"
+          title="Get Excel Data"
           onPress={async () => {
             await getData()
           }}
@@ -49,32 +52,14 @@ export default function DataScreen() {
         {data && data?.id ? (
           <>
             <View>
-              <Text style={styles.shoeDetailText}>shoeId: {data?.id}</Text>
-              <Text style={styles.shoeDetailText}>name: {data?.name}</Text>
-              <Text style={styles.shoeDetailText}>style: {data?.style}</Text>
-              <Text style={styles.shoeDetailText}>year: {data?.year}</Text>
-              <Text style={styles.shoeDetailText}>
-                modelNumber: {data?.modelNumber}
-              </Text>
-              <Text style={styles.shoeDetailText}>
-                colorway: {data?.colorway}
-              </Text>
-              <Image
-                source={{ uri: `https://omgshoes.eheidel.com${data?.image}` }}
-                style={{
-                  width: 300,
-                  height: 300,
-                  marginHorizontal: "auto",
-                }}
-                resizeMode="contain"
-              />
+              <Text></Text>
             </View>
           </>
         ) : (
           "Press Button to Display Data"
         )}
       </Text>
-      <Button title="Reset Data" onPress={() => setData({})} />
+      <Button title="Reset Excel Data" onPress={() => setData({})} />
     </ScrollView>
   )
 }
