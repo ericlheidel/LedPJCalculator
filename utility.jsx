@@ -89,6 +89,18 @@ export const TourExamples = [
     id: 7,
     tourName: "Hall & Oates",
   },
+  {
+    id: 8,
+    tourName: "Jason Aldean",
+  },
+  {
+    id: 9,
+    tourName: "Garth Brooks",
+  },
+  {
+    id: 10,
+    tourName: "Hardy",
+  },
 ]
 
 export const ShowExamples = [
@@ -116,6 +128,14 @@ export const ShowExamples = [
     id: 6,
     showName: "IEBA 2024",
   },
+  {
+    id: 7,
+    showName: "Scott Hamilton 2023",
+  },
+  {
+    id: 8,
+    showName: "NYE 2024",
+  },
 ]
 
 export const LEDConfigurationTourExample = [
@@ -134,5 +154,9 @@ export const LEDConfigurationTourExample = [
   {
     id: 4,
     name: "B Rig",
+  },
+  {
+    id: 5,
+    name: "Festival Rig",
   },
 ]
