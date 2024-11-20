@@ -27,6 +27,20 @@ export const LEDTileExamples = [
     processorTypeId: "SX40", //gg this WILL BE a foreign key
     image: "",
   },
+  {
+    id: 3,
+    tileBrandId: "Roe", //gg this WILL BE a foreign key
+    tileModel: "V9ST",
+    tileCardId: "Brompton", //gg this WILL BE a foreign key
+    pixelPitch: 2.3,
+    widthPixel: 248,
+    heightPixel: 124,
+    widthMM: 1500,
+    heightMM: 1000,
+    weightLBS: 81,
+    processorTypeId: "SX90", //gg this WILL BE a foreign key
+    image: "",
+  },
 ]
 
 export const ProcessorExamples = [
