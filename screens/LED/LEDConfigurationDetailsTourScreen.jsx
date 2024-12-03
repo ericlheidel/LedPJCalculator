@@ -7,7 +7,7 @@ import {
 import { LEDConfigurationTourExample, TourExamples } from "../../utility"
 import { useEffect, useState } from "react"
 import { Dropdown } from "react-native-element-dropdown"
-import RNPickerSelect from "react-native-picker-select/"
+// import RNPickerSelect from "react-native-picker-select/"
 
 export default function LEDConfigurationDetailsTourScreen() {
   const [isFirstDropdownFocus, setIsFirstDropdownFocus] = useState(false)
@@ -15,8 +15,8 @@ export default function LEDConfigurationDetailsTourScreen() {
 
   const [configArray, setConfigArray] = useState([])
 
-  const [selectedValue, setSelectedValue] = useState(0)
-  const [selectedLabel, setSelectedLabel] = useState("")
+  // const [selectedValue, setSelectedValue] = useState(0)
+  // const [selectedLabel, setSelectedLabel] = useState("")
 
   TourExamples.sort((a, b) => {
     if (a.tourName < b.tourName) return -1
@@ -30,10 +30,10 @@ export default function LEDConfigurationDetailsTourScreen() {
     })
   }, [configArray])
 
-  const transformedTours = TourExamples.map((tour) => ({
-    label: tour.tourName,
-    value: tour.id,
-  }))
+  // const transformedTours = TourExamples.map((tour) => ({
+  //   label: tour.tourName,
+  //   value: tour.id,
+  // }))
 
   // const showActionSheet = () => {
   //   const options = transformedTours.map((item) => item.label)
@@ -100,7 +100,7 @@ export default function LEDConfigurationDetailsTourScreen() {
           onBlur={() => setIsSecondDropdownFocus(false)}
         />
       </View>
-      <View>
+      {/* <View>
         <Text style={styles.titleText}>Tours</Text>
         <RNPickerSelect
           items={transformedTours}
@@ -115,7 +115,7 @@ export default function LEDConfigurationDetailsTourScreen() {
         <Text style={styles.selectedValue}>
           Selected Value: {selectedValue ? selectedValue : "None"}
         </Text>
-      </View>
+      </View> */}
       {/* <View>
         <Text>
           {Platform.OS === "ios" ? "this is iOS..." : "this is AndroidOS"}

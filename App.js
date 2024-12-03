@@ -8,7 +8,7 @@ import AppTwoTabs from "./tabs/AppTwoTabs"
 import Welcome from "./components/Welcome"
 import LEDConfigurationsScreen from "./screens/LED/LEDConfigurationsScreen"
 import DataScreen from "./screens/Data/DataScreen"
-import ExcelDataScreen from "./screens/Data/ExcelDataScreen"
+// import ExcelDataScreen from "./screens/Data/ExcelDataScreen"
 
 const Drawer = createDrawerNavigator()
 
@@ -51,11 +51,11 @@ export default function App() {
             component={DataScreen}
             options={{ headerTitle: "Get Data Example" }}
           />
-          <Drawer.Screen
+          {/* <Drawer.Screen
             name="GET Excel Data Example"
             component={ExcelDataScreen}
             options={{ headerTitle: "Get Excel Data Example" }}
-          />
+          /> */}
         </Drawer.Navigator>
       </NavigationContainer>
     )

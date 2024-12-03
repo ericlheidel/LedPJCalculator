@@ -15,7 +15,21 @@ import { ScrollView } from "react-native-gesture-handler"
 
 export default function LEDConfigurationsScreen() {
   const [isShowVisible, setIsShowVisible] = useState(false)
-  const [isTourVisible, setIsTourVisible] = useState(false)
+  const [isTourVisible, setIsTourVisible] = useState(true)
+
+  const toggleSwitch = () => {
+    if (isShowVisible === false) {
+      setIsShowVisible(true)
+    } else if (isShowVisible === true) {
+      setIsShowVisible(false)
+    }
+
+    if (isTourVisible === true) {
+      setIsTourVisible(false)
+    } else if (isTourVisible === false) {
+      setIsTourVisible(true)
+    }
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -27,7 +41,7 @@ export default function LEDConfigurationsScreen() {
         <Pressable>
           <Text style={styles.pressableText}>Shows</Text>
         </Pressable> */}
-        <Button
+        {/* <Button
           style={styles.button}
           title="Tour"
           onPress={() => {
@@ -42,9 +56,13 @@ export default function LEDConfigurationsScreen() {
             setIsTourVisible(false)
             setIsShowVisible(true)
           }}
-        />
+        /> */}
       </View>
       <View>
+        <View style={styles.toggleView}>
+          <Switch value={!isTourVisible} onValueChange={toggleSwitch} />
+          <Text style={styles.toggleText}>Shows</Text>
+        </View>
         {isTourVisible && <LEDConfigurationDetailsTourScreen />}
         {isShowVisible && <LEDConfigurationDetailsShowScreen />}
       </View>
@@ -66,5 +84,16 @@ const styles = StyleSheet.create({
   button: {
     width: 45,
     height: 45,
+  },
+  toggleView: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 12,
+  },
+  toggleText: {
+    marginLeft: 6,
+    fontSize: 20,
   },
 })
