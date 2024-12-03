@@ -12,13 +12,18 @@ import {
 } from "react-native"
 import { LEDTileExamples } from "../../utility"
 import { Dropdown } from "react-native-element-dropdown"
-import { createDrawerNavigator } from "@react-navigation/drawer"
 
 export default function LEDCalculatorScreen() {
   const [tiles, setTiles] = useState([])
 
   const [widthFeet, setWidthFeet] = useState(0)
   const [heightFeet, setHeightFeet] = useState(0)
+
+  const [widthFeetActual, setWidthFeetActual] = useState(0)
+  const [heightFeetActual, setHeightFeetActual] = useState(0)
+
+  const [widthFeetRounded, setWidthFeetRounded] = useState(0)
+  const [heightFeetRounded, setHeightFeetRounded] = useState(0)
 
   const [widthPanel, setWidthPanel] = useState(0)
   const [heightPanel, setHeightPanel] = useState(0)
@@ -33,10 +38,12 @@ export default function LEDCalculatorScreen() {
   // this is for a <Switch /> element, TRUE === switch is "on"
   const [isRoundedView, setIsRoundedView] = useState(false)
 
+  const [weight, setWeight] = useState(0)
+
   //00 KEY
   // Comments
   //mm WIDTH
-  //yy HEIGHT
+  //yy WIDTH
   //cc WEIGHT
   //rr MISC.
   //gg Functions
@@ -49,23 +56,47 @@ export default function LEDCalculatorScreen() {
   //mm useEffect to convert width PANELS to width FEET
   useEffect(() => {
     if (selectedTile.id && !isEditingWidthFeet) {
-      setWidthFeet(
+      setWidthFeet(widthPanel * ((selectedTile.widthMM / 1000) * 3.28084))
+      setWidthFeetActual(widthPanel * ((selectedTile.widthMM / 1000) * 3.28084))
+    }
+    if (selectedTile.id && !isEditingWidthFeet) {
+      setWidthFeetRounded(
         Math.ceil(widthPanel * ((selectedTile.widthMM / 1000) * 3.28084))
       )
     }
   }, [widthPanel])
 
   //mm useEffect to convert width FEET to width PANELS
+  // useEffect(() => {
+  //   if (selectedTile.id && isEditingWidthFeet) {
+  //     setWidthPanel(Math.floor((widthFeet * 304.8) / selectedTile.widthMM))
+  //   }
+  // }, [widthFeet])
+
   useEffect(() => {
     if (selectedTile.id && isEditingWidthFeet) {
-      setWidthPanel(Math.floor((widthFeet * 304.8) / selectedTile.widthMM))
+      // Debounce or batch state updates
+      const panel = Math.floor((widthFeet * 304.8) / selectedTile.widthMM)
+      setWidthPanel(panel)
+
+      // Ensure dependent calculations use the updated value
+      setTimeout(() => {
+        const feetActual = (selectedTile.widthMM / 1000) * 3.28084 * panel
+        setWidthFeetActual(feetActual)
+      }, 0) // Timeout ensures state update is completed
     }
   }, [widthFeet])
 
   //yy useEffect to convert height PANELS to height FEET
   useEffect(() => {
     if (selectedTile.id && !isEditingHeightFeet) {
-      setHeightFeet(
+      setHeightFeet(heightPanel * ((selectedTile.heightMM / 1000) * 3.28084))
+      setHeightFeetActual(
+        heightPanel * ((selectedTile.heightMM / 1000) * 3.28084)
+      )
+    }
+    if (selectedTile.id && !isEditingHeightFeet) {
+      setHeightFeetRounded(
         Math.ceil(heightPanel * ((selectedTile.heightMM / 1000) * 3.28084))
       )
     }
@@ -78,10 +109,12 @@ export default function LEDCalculatorScreen() {
     }
   }, [heightFeet])
 
-  //cc useEffect to convert PANELS to POUNDS (LBS)
+  //cc useEffect to convert PANELS to WEIGHT
   useEffect(() => {
-    //
-  }, [])
+    if (selectedTile.id) {
+      setWeight(widthPanel * heightPanel * selectedTile.weightLBS)
+    }
+  }, [widthPanel, heightPanel])
 
   //rr Add key of "tileFullName" with value of "brand-card-pixelPitch" to tile object
   const concatenatedTileLabels = tiles.map((tile) => ({
@@ -98,17 +131,32 @@ export default function LEDCalculatorScreen() {
   )
 
   //gg Function to clear all 4 <TextInput />'s
-  const clearTextInputs = () => {
+  const clearState = () => {
+    // width
     setWidthFeet(0)
+    setWidthFeetActual(0)
+    setWidthFeetRounded(0)
     setWidthPanel(0)
+
+    // height
     setHeightFeet(0)
+    setHeightFeetActual(0)
+    setHeightFeetRounded(0)
     setHeightPanel(0)
+
+    // weight
+    setWeight(0)
   }
 
   const toggleSwitch = () => {
     if (isRoundedView === false) {
+      setWidthFeet(widthFeetRounded)
+      setHeightFeet(heightFeetRounded)
       setIsRoundedView(true)
-    } else if (isRoundedView === true) {
+    }
+    if (isRoundedView === true) {
+      setWidthFeet(widthFeetActual)
+      setHeightFeet(heightFeetActual)
       setIsRoundedView(false)
     }
   }
@@ -134,7 +182,7 @@ export default function LEDCalculatorScreen() {
             onFocus={() => setIsTileDropdownFocus(true)}
             onBlur={() => setIsTileDropdownFocus(false)}
             onChange={(item) => {
-              clearTextInputs()
+              clearState()
               setSelectedTile(item)
               console.log(item)
             }}
@@ -158,7 +206,7 @@ export default function LEDCalculatorScreen() {
                 fontSize: 20,
               }}
             >
-              Rounded
+              Actual
             </Text>
             <Switch value={isRoundedView} onValueChange={toggleSwitch} />
             <Text
@@ -169,10 +217,9 @@ export default function LEDCalculatorScreen() {
                 fontSize: 20,
               }}
             >
-              Actual
+              Rounded
             </Text>
           </View>
-          {/* //mm SIZE === FEET CONTAINER */}
           {/* //mm WIDTH FEET */}
           <View style={styles.sizeContainer}>
             <View style={styles.widthContainer}>
@@ -195,7 +242,7 @@ export default function LEDCalculatorScreen() {
                 }
               />
             </View>
-            {/* //mm HEIGHT FEET */}
+            {/* //yy HEIGHT FEET */}
             <View style={styles.heightContainer}>
               <Text style={styles.sizeText}>{`Height (ft):`}</Text>
               <TextInput
@@ -217,8 +264,33 @@ export default function LEDCalculatorScreen() {
               />
             </View>
           </View>
-          {/* //yy SIZE === PANELS CONTAINER */}
-          {/* //yy WIDTH PANELS */}
+          {/* //mm ACTUAL WIDTH FEET */}
+          {/* <View style={styles.sizeContainer}>
+            <View style={styles.widthContainer}>
+              <Text style={styles.sizeText}>{`Actual Width:`}</Text>
+              <TextInput
+                style={styles.textInput}
+                value={widthFeetActual === 0 ? "" : widthFeetActual.toString()}
+                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                textAlign="right"
+                editable={false}
+              />
+            </View> */}
+          {/* //yy ACTUAL HEIGHT FEET */}
+          {/* <View style={styles.heightContainer}>
+              <Text style={styles.sizeText}>{`Actual Height:`}</Text>
+              <TextInput
+                style={styles.textInput}
+                value={
+                  heightFeetActual === 0 ? "" : heightFeetActual.toString()
+                }
+                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                textAlign="right"
+                editable={false}
+              />
+            </View>
+          </View> */}
+          {/* //mm WIDTH PANELS */}
           <View style={styles.sizeContainer}>
             <View style={styles.widthContainer}>
               <Text style={styles.sizeText}>{`Width (panels):`}</Text>
@@ -263,7 +335,16 @@ export default function LEDCalculatorScreen() {
             </View>
           </View>
           <View style={styles.buttonView}>
-            <Button title="Clear" onPress={() => clearTextInputs()}></Button>
+            <Button title="Clear" onPress={() => clearState()}></Button>
+          </View>
+          <View style={styles.weightContainer}>
+            <Text style={styles.weightText}>Weight (LBS):</Text>
+            <TextInput
+              style={[styles.textInput, { width: "33%" }]}
+              value={weight === 0 ? "" : weight.toString()}
+              editable={false}
+              textAlign="right"
+            />
           </View>
         </View>
       </ScrollView>
@@ -295,7 +376,16 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
   },
+  weightContainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+  },
   sizeText: {
+    fontSize: 24,
+  },
+  weightText: {
     fontSize: 24,
   },
   textInput: {
@@ -339,6 +429,8 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
   },
+
+  // Button
   buttonView: {
     width: "20%",
     marginLeft: "auto",
