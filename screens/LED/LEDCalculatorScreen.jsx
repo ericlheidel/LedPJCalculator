@@ -8,7 +8,6 @@ import {
   Platform,
   Button,
   SafeAreaView,
-  Switch,
 } from "react-native"
 import { LEDTileExamples } from "../../utility"
 import { Dropdown } from "react-native-element-dropdown"
@@ -34,9 +33,6 @@ export default function LEDCalculatorScreen() {
 
   const [isEditingWidthFeet, setIsEditingWidthFeet] = useState(false)
   const [isEditingHeightFeet, setIsEditingHeighthFeet] = useState(false)
-
-  // this is for a <Switch /> element, TRUE === switch is "on"
-  const [isRoundedView, setIsRoundedView] = useState(false)
 
   const [weight, setWeight] = useState(0)
 
@@ -67,12 +63,6 @@ export default function LEDCalculatorScreen() {
   }, [widthPanel])
 
   //mm useEffect to convert width FEET to width PANELS
-  // useEffect(() => {
-  //   if (selectedTile.id && isEditingWidthFeet) {
-  //     setWidthPanel(Math.floor((widthFeet * 304.8) / selectedTile.widthMM))
-  //   }
-  // }, [widthFeet])
-
   useEffect(() => {
     if (selectedTile.id && isEditingWidthFeet) {
       // Debounce or batch state updates
@@ -105,13 +95,23 @@ export default function LEDCalculatorScreen() {
   //yy useEffect to convert height FEET to height PANELS
   useEffect(() => {
     if (selectedTile.id && isEditingHeightFeet) {
-      setHeightPanel(Math.floor((heightFeet * 304.8) / selectedTile.heightMM))
+      const panel = Math.floor((heightFeet * 304.8) / selectedTile.heightMM)
+      setHeightPanel(panel)
+
+      setTimeout(() => {
+        const feetActual = (selectedTile.heightMM / 1000) * 3.28084 * panel
+        setHeightFeetActual(feetActual)
+      }, 0)
     }
   }, [heightFeet])
 
   //cc useEffect to convert PANELS to WEIGHT
   useEffect(() => {
-    if (selectedTile.id) {
+    if (selectedTile.id && widthPanel === 0) {
+      setWeight(heightPanel * selectedTile.weightLBS)
+    } else if (selectedTile.id && heightPanel === 0) {
+      setWeight(widthPanel * selectedTile.weightLBS)
+    } else if (selectedTile.id) {
       setWeight(widthPanel * heightPanel * selectedTile.weightLBS)
     }
   }, [widthPanel, heightPanel])
@@ -148,19 +148,6 @@ export default function LEDCalculatorScreen() {
     setWeight(0)
   }
 
-  const toggleSwitch = () => {
-    if (isRoundedView === false) {
-      setWidthFeet(widthFeetRounded)
-      setHeightFeet(heightFeetRounded)
-      setIsRoundedView(true)
-    }
-    if (isRoundedView === true) {
-      setWidthFeet(widthFeetActual)
-      setHeightFeet(heightFeetActual)
-      setIsRoundedView(false)
-    }
-  }
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView keyboardShouldPersistTaps="handled" style={styles.container}>
@@ -187,47 +174,19 @@ export default function LEDCalculatorScreen() {
               console.log(item)
             }}
           />
-          {/* <SWITCH /> for Rounded/Actual sizes (feet)s */}
-          {/* <SWITCH /> for Rounded/Actual sizes (feet)s */}
-          {/* <SWITCH /> for Rounded/Actual sizes (feet)s */}
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 12,
-            }}
-          >
-            <Text
-              style={{
-                marginTop: "auto",
-                marginBottom: "auto",
-                marginRight: 6,
-                fontSize: 20,
-              }}
-            >
-              Actual
-            </Text>
-            <Switch value={isRoundedView} onValueChange={toggleSwitch} />
-            <Text
-              style={{
-                marginTop: "auto",
-                marginBottom: "auto",
-                marginLeft: 6,
-                fontSize: 20,
-              }}
-            >
-              Rounded
-            </Text>
-          </View>
-          {/* //mm WIDTH FEET */}
+          {/* //mm WIDTH FEET --> ROUNDED */}
           <View style={styles.sizeContainer}>
             <View style={styles.widthContainer}>
               <Text style={styles.sizeText}>{`Width (ft):`}</Text>
               <TextInput
                 style={styles.textInput}
-                value={widthFeet === 0 ? "" : widthFeet.toString()}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                value={
+                  widthFeetRounded === 0 ? "" : widthFeetRounded.toString()
+                }
+                keyboardType={Platform.select({
+                  ios: "decimal-pad",
+                  android: "numeric",
+                })}
                 textAlign="right"
                 onFocus={(e) => {
                   setIsEditingWidthFeet(true)
@@ -237,18 +196,26 @@ export default function LEDCalculatorScreen() {
                   }
                 }}
                 onBlur={() => setIsEditingWidthFeet(false)}
-                onChangeText={(value) =>
-                  setWidthFeet(value === "" ? "" : parseFloat(value) || 0)
-                }
+                onChangeText={(value) => {
+                  if (/^(\d+(\.\d*)?)?$/.test(value)) {
+                    setWidthFeet(value === "" ? "" : parseFloat(value))
+                    setWidthFeetRounded(value)
+                  }
+                }}
               />
             </View>
-            {/* //yy HEIGHT FEET */}
+            {/* //yy HEIGHT FEET --> ROUNDED */}
             <View style={styles.heightContainer}>
               <Text style={styles.sizeText}>{`Height (ft):`}</Text>
               <TextInput
                 style={styles.textInput}
-                value={heightFeet === 0 ? "" : heightFeet.toString()}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                value={
+                  heightFeetRounded === 0 ? "" : heightFeetRounded.toString()
+                }
+                keyboardType={Platform.select({
+                  ios: "decimal-pad",
+                  android: "numeric",
+                })}
                 textAlign="right"
                 onFocus={(e) => {
                   setIsEditingHeighthFeet(true)
@@ -258,46 +225,60 @@ export default function LEDCalculatorScreen() {
                   }
                 }}
                 onBlur={() => setIsEditingHeighthFeet(false)}
-                onChangeText={(value) =>
-                  setHeightFeet(value === "" ? "" : parseFloat(value) || 0)
-                }
+                onChangeText={(value) => {
+                  if (/^(\d+(\.\d*)?)?$/.test(value)) {
+                    setHeightFeet(value === "" ? "" : parseFloat(value))
+                    setHeightFeetRounded(value)
+                  }
+                }}
               />
             </View>
           </View>
-          {/* //mm ACTUAL WIDTH FEET */}
-          {/* <View style={styles.sizeContainer}>
+          {/* //mm WIDTH FEET --> ACTUAL */}
+          <View style={styles.sizeContainer}>
             <View style={styles.widthContainer}>
-              <Text style={styles.sizeText}>{`Actual Width:`}</Text>
+              <Text
+                style={[styles.sizeText, { color: "#808080" }]}
+              >{`Actual Width:`}</Text>
               <TextInput
-                style={styles.textInput}
-                value={widthFeetActual === 0 ? "" : widthFeetActual.toString()}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
-                textAlign="right"
-                editable={false}
-              />
-            </View> */}
-          {/* //yy ACTUAL HEIGHT FEET */}
-          {/* <View style={styles.heightContainer}>
-              <Text style={styles.sizeText}>{`Actual Height:`}</Text>
-              <TextInput
-                style={styles.textInput}
+                style={[styles.textInput, { color: "#808080" }]}
                 value={
-                  heightFeetActual === 0 ? "" : heightFeetActual.toString()
+                  widthFeetActual === 0
+                    ? ""
+                    : widthFeetActual.toFixed(2).toString()
                 }
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
                 textAlign="right"
                 editable={false}
               />
             </View>
-          </View> */}
-          {/* //mm WIDTH PANELS */}
+            {/* //yy HEIGHT FEET --> ACTUAL */}
+            <View style={styles.heightContainer}>
+              <Text
+                style={[styles.sizeText, { color: "#808080" }]}
+              >{`Actual Height:`}</Text>
+              <TextInput
+                style={[styles.textInput, { color: "#808080" }]}
+                value={
+                  heightFeetActual === 0
+                    ? ""
+                    : heightFeetActual.toFixed(2).toString()
+                }
+                textAlign="right"
+                editable={false}
+              />
+            </View>
+          </View>
+          {/* //mm WIDTH --> PANELS */}
           <View style={styles.sizeContainer}>
             <View style={styles.widthContainer}>
               <Text style={styles.sizeText}>{`Width (panels):`}</Text>
               <TextInput
                 style={styles.textInput}
                 value={widthPanel === 0 ? "" : widthPanel.toString()}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                keyboardType={Platform.select({
+                  ios: "decimal-pad",
+                  android: "numeric",
+                })}
                 textAlign="right"
                 onFocus={(e) => {
                   setIsEditingWidthFeet(false)
@@ -306,19 +287,24 @@ export default function LEDCalculatorScreen() {
                     e.target.blur()
                   }
                 }}
-                onBlur={() => setIsEditingWidthFeet(true)}
+                onBlur={() => {
+                  setIsEditingWidthFeet(true)
+                }}
                 onChangeText={(value) =>
                   setWidthPanel(value === "" ? "" : parseFloat(value) || 0)
                 }
               />
             </View>
-            {/* //yy HEIGHT PANELS */}
+            {/* //yy HEIGHT --> PANELS */}
             <View style={styles.heightContainer}>
               <Text style={styles.sizeText}>{`Height (panels):`}</Text>
               <TextInput
                 style={styles.textInput}
                 value={heightPanel === 0 ? "" : heightPanel.toString()}
-                keyboardType={Platform.OS === "ios" ? "decimal-pad" : ""}
+                keyboardType={Platform.select({
+                  ios: "decimal-pad",
+                  android: "numeric",
+                })}
                 textAlign="right"
                 onFocus={(e) => {
                   setIsEditingHeighthFeet(false)
@@ -327,7 +313,9 @@ export default function LEDCalculatorScreen() {
                     e.target.blur()
                   }
                 }}
-                onBlur={() => setIsEditingHeighthFeet(true)}
+                onBlur={() => {
+                  setIsEditingHeighthFeet(true)
+                }}
                 onChangeText={(value) =>
                   setHeightPanel(value === "" ? "" : parseFloat(value) || 0)
                 }
@@ -338,9 +326,11 @@ export default function LEDCalculatorScreen() {
             <Button title="Clear" onPress={() => clearState()}></Button>
           </View>
           <View style={styles.weightContainer}>
-            <Text style={styles.weightText}>Weight (LBS):</Text>
+            <Text style={[styles.weightText, { color: "#808080" }]}>
+              Weight (LBS):
+            </Text>
             <TextInput
-              style={[styles.textInput, { width: "33%" }]}
+              style={[styles.textInput, { width: "33%", color: "#808080" }]}
               value={weight === 0 ? "" : weight.toString()}
               editable={false}
               textAlign="right"
@@ -387,6 +377,7 @@ const styles = StyleSheet.create({
   },
   weightText: {
     fontSize: 24,
+    color: "#808080",
   },
   textInput: {
     borderWidth: 1,
@@ -395,8 +386,13 @@ const styles = StyleSheet.create({
     width: "60%",
     height: 40,
     padding: 8,
-    fontSize: 24,
+    fontSize: 26,
     textAlign: "right",
+    ...Platform.select({
+      android: {
+        fontSize: 20,
+      },
+    }),
   },
 
   // Dropdown
@@ -417,17 +413,17 @@ const styles = StyleSheet.create({
     top: 8,
     zIndex: 999,
     paddingHorizontal: 8,
-    fontSize: 14,
+    fontSize: 20,
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: 20,
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: 20,
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: 20,
   },
 
   // Button
@@ -435,6 +431,7 @@ const styles = StyleSheet.create({
     width: "20%",
     marginLeft: "auto",
     marginRight: "auto",
-    marginTop: 14,
+    marginTop: 12,
+    marginBottom: 6,
   },
 })
