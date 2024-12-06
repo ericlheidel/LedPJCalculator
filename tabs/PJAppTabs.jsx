@@ -7,7 +7,7 @@ import { Ionicons } from "@expo/vector-icons"
 
 const Tab = createBottomTabNavigator()
 
-export default function AppTwoTabs() {
+export default function PJAppTabs() {
   return (
     <Tab.Navigator
       initialRouteName="Projector Calculator"

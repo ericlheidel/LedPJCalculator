@@ -3,11 +3,12 @@ import { createDrawerNavigator } from "@react-navigation/drawer"
 import "./gesture-handler"
 import { StyleSheet, View } from "react-native"
 import { NavigationContainer } from "@react-navigation/native"
-import AppOneTabs from "./tabs/AppOneTabs"
-import AppTwoTabs from "./tabs/AppTwoTabs"
 import Welcome from "./components/Welcome"
 import LEDConfigurationsScreen from "./screens/LED/LEDConfigurationsScreen"
 import DataScreen from "./screens/Data/DataScreen"
+import LEDAppTabs from "./tabs/LEDAppTabs"
+import PJAppTabs from "./tabs/PJAppTabs"
+import LEDAppTabsTwo from "./tabs/LEDAppTabsTwo"
 
 const Drawer = createDrawerNavigator()
 
@@ -32,12 +33,17 @@ export default function App() {
         <Drawer.Navigator initialRouteName="LED">
           <Drawer.Screen
             name="LED"
-            component={AppOneTabs}
+            component={LEDAppTabs}
+            options={{ headerTitle: "Moo TV" }}
+          />
+          <Drawer.Screen
+            name="LED 2"
+            component={LEDAppTabsTwo}
             options={{ headerTitle: "Moo TV" }}
           />
           <Drawer.Screen
             name="Projector"
-            component={AppTwoTabs}
+            component={PJAppTabs}
             options={{ headerTitle: "Moo TV" }}
           />
           <Drawer.Screen

@@ -1,16 +1,16 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import LEDTilesScreen from "../screens/LED/LEDTilesScreen"
 import LEDProcessorsScreen from "../screens/LED/LEDProcessorsScreen"
-import LEDCalculatorScreen from "../screens/LED/LEDCalculatorScreen"
 import { Ionicons } from "@expo/vector-icons"
 import { StyleSheet, View, Text, Platform } from "react-native"
+import LEDCalculatorScreenTwo from "../screens/LED/LEDCalculatorScreenTwo"
 
 const Tab = createBottomTabNavigator()
 
-export default function AppOneTabs({ navigation }) {
+export default function LEDAppTabsTwo({ navigation }) {
   return (
     <Tab.Navigator
-      initialRouteName="LED Calculator"
+      initialRouteName="LED Calculator 2"
       style={styles.container}
       screenOptions={{
         tabBarStyle: {
@@ -21,8 +21,8 @@ export default function AppOneTabs({ navigation }) {
       }}
     >
       <Tab.Screen
-        name="LED Calculator"
-        component={LEDCalculatorScreen}
+        name="LED Calculator 2"
+        component={LEDCalculatorScreenTwo}
         options={{
           tabBarIcon: ({ color, focused }) => {
             return <Ionicons name="calculator" size={30} color={color} />
